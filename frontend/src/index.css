@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide scrollbar by default */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Show scrollbar on hover */
+.hover\:scrollbar-show:hover::-webkit-scrollbar {
+  display: block;
+}
+
+/* Custom scrollbar styles */
+.hover\:scrollbar-show::-webkit-scrollbar {
+  height: 8px;
+}
+
+.hover\:scrollbar-show::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+}
