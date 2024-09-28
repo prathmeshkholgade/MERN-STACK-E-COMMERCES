@@ -13,7 +13,7 @@ export default function ProductContainer() {
   useEffect(() => {
     loadData();
   }, [dispatch]);
-  return (
+  return products && (
     <div className="sm:p-6 lg:mx-6  flex flex-wrap gap-10 justify-center md:justify-start ">
       {products.map((product, idx) => (
         <ProductCard product={product} />

@@ -35,11 +35,19 @@ const allProduct = async (req, res) => {
 };
 const fetchSigleProduct = async (req, res, next) => {
   const { id } = req.params;
-  const product = await Product.findById(id);
+  const product = await Product.findById(id).populate({
+    path: "reviews",
+    populate: { path: "owner" },
+  });
   if (!product) {
     return next(new ExpressError(400, "product not found"));
   }
-  res.status(200).json({ product });
+  const similarProduct = await Product.find({
+    category: product.category,
+    _id: { $ne: product._id },
+  });
+  console.log("similar", similarProduct);
+  res.status(200).json({ product, similarProduct });
 };
 module.exports = {
   createProduct,

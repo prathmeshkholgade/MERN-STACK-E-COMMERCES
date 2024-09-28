@@ -17,6 +17,21 @@ export const loadProducts = createAsyncThunk(
     }
   }
 );
+export const addReview = createAsyncThunk(
+  "product/addReview",
+  async (id, thunkAPI) => {
+    try {
+      const res = await axios.post(`${baseUrl}/review/${id}`, {
+        withCredentials: true,
+      });
+      console.log(res);
+      return res.data;
+    } catch (err) {
+      console.log(err);
+      return thunkAPI.rejectWithValue(err.response.data || err.message);
+    }
+  }
+);
 export const fetchSigleProduct = createAsyncThunk(
   "product/sigleProduct",
   async (id, thunkAPI) => {
@@ -25,7 +40,7 @@ export const fetchSigleProduct = createAsyncThunk(
         withCredentials: true,
       });
       console.log(res);
-      return res.data.product;
+      return res.data;
     } catch (err) {
       console.log(err);
       return thunkAPI.rejectWithValue(err.response.data || err.message);
@@ -50,6 +65,7 @@ export const createProduct = createAsyncThunk(
 const initialState = {
   products: [],
   product: null,
+  similarProducts: null,
   loading: null,
   error: null,
 };
@@ -62,11 +78,16 @@ const productSlice = createSlice({
       .addCase(createProduct.fulfilled, (state, action) => {
         state.loading = true;
       })
+      .addCase(addReview.fulfilled, (state, action) => {
+        state.loading = true;
+      })
       .addCase(loadProducts.fulfilled, (state, action) => {
+        console.log(action.payload);
         state.products = action.payload;
       })
       .addCase(fetchSigleProduct.fulfilled, (state, action) => {
-        state.product = action.payload;
+        state.product = action.payload.product;
+        state.similarProducts = action.payload.similarProduct;
       });
   },
 });
