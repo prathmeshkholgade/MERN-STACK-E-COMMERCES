@@ -3,7 +3,7 @@ import React from "react";
 
 export default function ReviewCard({ review }) {
   return review ? (
-    <div className=" w-[45%] max-h-44  overflow-hidden">
+    <div className="w-full sm:w-[45%] max-h-44  overflow-hidden">
       <div className="info flex gap-4">
         <div
           className="img bg-red-600 w-14 h-14 rounded-full text-center"

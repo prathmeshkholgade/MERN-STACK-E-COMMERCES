@@ -16,11 +16,12 @@ export default function ReviewInput() {
   const dispatch = useDispatch();
   const { id } = useParams();
   const onSubmit = async (data) => {
+    console.log(data);
     try {
       if (!data.rating) {
         data.rating = 1; // Default rating if not selected
       }
-      await dispatch(addReview(id)).unwrap();
+      await dispatch(addReview({ id, data })).unwrap();
       console.log(data);
     } catch (err) {
       console.log(err);
@@ -36,10 +37,8 @@ export default function ReviewInput() {
           <Box sx={{ "& > legend": { mt: 2 } }}>
             <Typography component="legend">Your Rating</Typography>
             <Rating
-              name="simple-controlled"
-              //   {...register("rating", {
-              //     required: { value: true, message: "please choice rating" },
-              //   })}
+              name="size-large"
+              size="large"
               value={value}
               onChange={(event, newValue) => {
                 setRatingValue(newValue);

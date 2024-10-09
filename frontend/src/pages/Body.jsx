@@ -1,13 +1,11 @@
 import React from "react";
-import ProductCard from "../components/ProductCard";
+
 import ProductContainer from "./products/ProductContainer";
+import { useSelector } from "react-redux";
 
 export default function Body() {
   return (
-    <div>
-      <div>
-        <h2>All Products</h2>
-      </div>
+    <div className="mt-4">
       <ProductContainer />
     </div>
   );

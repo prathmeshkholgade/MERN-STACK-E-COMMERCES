@@ -1,8 +1,11 @@
 const User = require("../models/userModel");
+const ExpressError = require("../utils/ExpressError");
 
 const login = (req, res) => {
-  res.json({ message: "you are logged in", id: req.user.id });
+  const { hash, salt, ...userWithOutSesitiveInfo } = req.user.toObject();
+  res.status(200).json({ user: userWithOutSesitiveInfo });
 };
+
 const signup = async (req, res, next) => {
   const { password, ...other } = req.body;
   const newUser = new User(other);
@@ -11,7 +14,8 @@ const signup = async (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.send(registerUser);
+    const { hash, salt, ...userWithOutSesitiveInfo } = registerUser.toObject();
+    res.status(201).json({ user: userWithOutSesitiveInfo });
   });
 };
 const logOut = (req, res, next) => {
@@ -22,4 +26,29 @@ const logOut = (req, res, next) => {
     res.send("you are logOut now");
   });
 };
-module.exports = { login, signup, logOut };
+const getUserData = (req, res, next) => {
+  try {
+    console.log("user:which currently logged in", req.user);
+    if (req.isAuthenticated()) {
+      return res.status(200).json({ user: req.user });
+    } else {
+      next(new ExpressError(401, "user is not authenticate"));
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+module.exports = { login, signup, logOut, getUserData };
+// const getUserData = (req, res, next) => {
+//   try {
+//     console.log("user:which currently logged in", req.user);
+//     if (req.isAuthenticated()) {
+//       return res.status(200).json({ user: req.user });
+//     } else {
+//       res.json({ message: "user is not authenticate" });
+//     }
+//   } catch (err) {
+//     res.json({ err });
+//     console.log(err);
+//   }
+// };

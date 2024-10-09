@@ -18,7 +18,12 @@ router.post("/add", upload.array("img", 12), wrapAsync(createProduct));
 //read
 router.get("/", wrapAsync(allProduct));
 //update
-router.put("/edit/:id", isLoggedIn, wrapAsync(updateProduct));
+router.put(
+  "/edit/:id",
+  upload.array("img", 12),
+  isLoggedIn,
+  wrapAsync(updateProduct)
+);
 //delete
 router.delete("/delete/:id", isLoggedIn, wrapAsync(destroyProduct));
 //sigleProduct

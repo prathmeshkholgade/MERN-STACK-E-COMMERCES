@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { fetchSigleProduct } from "../../app/features/products/productSlice";
 import ReviewInput from "../../components/ReviewInput";
 import ReviewCard from "../../components/ReviewCard";
 import ProductCard from "../../components/ProductCard";
+import Pagination from "../../components/Pagination";
+import { addToCart } from "../../app/features/cart/cartSlice";
+
 export default function ProductDetails() {
   const { id } = useParams();
   const { product, similarProducts } = useSelector((state) => state.Product);
@@ -15,13 +18,26 @@ export default function ProductDetails() {
   const [isDragging, setIsDragging] = useState(false); // To track dragging state
   const [startX, setStartX] = useState(0); // Starting x position for drag
   const [scrollLeft, setScrollLeft] = useState(0); // Scroll position when drag starts
-
+  const [currPage, setcurrPage] = useState(1);
+  const reviewsPerPage = 6;
+  const pageCount = Math.ceil(reviews?.length / reviewsPerPage);
   const fetchProduct = async (id) => {
     try {
       await dispatch(fetchSigleProduct(id)).unwrap();
     } catch (err) {
       console.log(err);
     }
+  };
+  const handleAddToCart = async (data) => {
+    console.log(data);
+    await dispatch(addToCart({ data }));
+  };
+  const currReviews =
+    reviews &&
+    reviews?.slice((currPage - 1) * reviewsPerPage, currPage * reviewsPerPage);
+
+  const handlePageChange = (event, value) => {
+    setcurrPage(value);
   };
 
   const handleMouseDown = (e) => {
@@ -54,13 +70,13 @@ export default function ProductDetails() {
   }, [id]);
   return product ? (
     <div className="mx-auto w-[90%]  h-full ">
-      <div className="flex   h-[90vh] py-2    ">
-        <div className="imgs   w-[40%]  ">
-          <div className="p-1 w-full border-2 border-gray-200">
+      <div className="md:flex    py-2    ">
+        <div className="imgs   md:w-1/2   lg:w-[40%]">
+          <div className="p-1 w-full ">
             <img
-              src={product.image[currImg].url}
+              src={product?.image[currImg]?.url}
               alt={product.name}
-              className="w-full object-center h-[450px] rounded-lg "
+              className="w-full object-contain md:object-center h-[300px] sm:h-[450px] rounded-lg "
             />
           </div>
           <div
@@ -81,16 +97,16 @@ export default function ProductDetails() {
                 src={img.url}
                 className={`${
                   currImg === idx && "border-2 border-zinc-800"
-                } w-24 h-24 rounded-lg`}
+                } w-24 h-24 sm:w-16 sm:h-16 md:w-24 md:h-24 rounded-lg`}
                 onClick={() => setcurrImg(idx)}
               />
             ))}
           </div>
         </div>
-        <div className="details flex flex-col py-4 px-8 w-[60%]    ">
-          <div className=" flex flex-col p-2 min-h-[550px] ">
+        <div className="details flex flex-col px-2 lg:px-8 sm:w-[60%]    ">
+          <div className=" flex flex-col p-2 sm:min-h-[550px] ">
             <div className="product-info w-full flex-grow  ">
-              <div className="py-4">
+              <div className="py-2">
                 <h2 className="text-3xl font-medium">{product.name}</h2>
                 <p className="text-lg py-2">{product.description} </p>
               </div>
@@ -100,21 +116,29 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            <div className="btns  bg-white py-4 px-8">
+            <div className="btns   bg-white py-4 px-2 lg:px-8">
               <div className="py-2 flex gap-8">
-                <button className="bg-red-600 text-white py-1 px-6 rounded-md">
-                  Edit
-                </button>
+                <Link to={`/edit/${product._id}`}>
+                  {" "}
+                  <button className="bg-red-600 text-white py-1 px-6 rounded-md">
+                    Edit
+                  </button>
+                </Link>
                 <button className="py-1 px-6 rounded-md bg-red-600 text-white">
                   Delete
                 </button>
               </div>
-              <div className="flex gap-8 ">
-                <button className="bg-[#ff9f00] py-2 px-4 text-lg rounded-md text-white font-medium ">
-                  ADD TO CART
+              <div className="flex lg:text-lg gap-8 ">
+                <button
+                  className="bg-[#1c252e] hover:bg-opacity-80  py-2 px-4  rounded-md text-white font-medium "
+                  onClick={() =>
+                    handleAddToCart({ productId: product._id, quantity: 1 })
+                  }
+                >
+                  Add to cart
                 </button>
-                <button className="bg-[#fb641b] py-2 px-6 text-lg rounded-md text-white font-medium ">
-                  BUY NOW
+                <button className="bg-[#fb641b] py-2 px-6  rounded-md text-white font-medium hover:bg-[#ae653d] ">
+                  Buy now
                 </button>
               </div>
             </div>
@@ -123,12 +147,21 @@ export default function ProductDetails() {
       </div>
       <hr className="border-1" />
       <div className=" w-full mt-4  p-2 ">
-        <div className="flex gap-10 flex-wrap justify-between w-[90%] mx-auto">
+        <div className="flex gap-10 flex-wrap justify-between w-[90%] mx-auto border-b-2 mb-2">
           {reviews &&
-            reviews.map((review, idx) => (
+            currReviews.map((review, idx) => (
               <ReviewCard key={review._id} review={review} />
             ))}
         </div>
+        {reviews.length > reviewsPerPage && (
+          <div className="flex items-center mt-4 justify-center">
+            <Pagination
+              page={currPage}
+              count={pageCount}
+              handlePageChange={handlePageChange}
+            />
+          </div>
+        )}
       </div>
       <div className="rating input bg-gray-400 mb-4">
         <ReviewInput />
@@ -138,12 +171,12 @@ export default function ProductDetails() {
         <div className="flex flex-wrap gap-4">
           {similarProducts &&
             similarProducts.map((product, idx) => (
-              <ProductCard product={product} />
+              <ProductCard key={product._id} product={product} />
             ))}
         </div>
       </div>
     </div>
   ) : (
-    "<h1>Loading.. </h1>"
+    <h1>Loading...</h1>
   );
 }

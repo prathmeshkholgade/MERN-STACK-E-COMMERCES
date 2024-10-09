@@ -19,9 +19,9 @@ export const loadProducts = createAsyncThunk(
 );
 export const addReview = createAsyncThunk(
   "product/addReview",
-  async (id, thunkAPI) => {
+  async ({ id, data }, thunkAPI) => {
     try {
-      const res = await axios.post(`${baseUrl}/review/${id}`, {
+      const res = await axios.post(`${baseUrl}/review/${id}`, data, {
         withCredentials: true,
       });
       console.log(res);
@@ -47,12 +47,43 @@ export const fetchSigleProduct = createAsyncThunk(
     }
   }
 );
+export const fetchSigleProductForEdit = createAsyncThunk(
+  "product/sigleProductForEdit",
+  async (id, thunkAPI) => {
+    try {
+      const res = await axios.get(`${baseUrl}/product/${id}`, {
+        withCredentials: true,
+      });
+      console.log(res);
+      return res.data;
+    } catch (err) {
+      console.log(err);
+      return thunkAPI.rejectWithValue(err.response.data || err.message);
+    }
+  }
+);
 
 export const createProduct = createAsyncThunk(
   "product/add",
   async (data, thunkAPI) => {
     try {
       const res = await axios.post(`${baseUrl}/product/add`, data);
+      console.log(res);
+      return res.data;
+    } catch (err) {
+      console.log(err);
+      return thunkAPI.rejectWithValue(err.response.data || err.message);
+    }
+  }
+);
+export const updateProduct = createAsyncThunk(
+  "product/updateproduct",
+  async ({ id, data }, thunkAPI) => {
+    console.log("edit data", data);
+    try {
+      const res = await axios.put(`${baseUrl}/product/edit/${id}`, data, {
+        withCredentials: true,
+      });
       console.log(res);
       return res.data;
     } catch (err) {
@@ -88,7 +119,9 @@ const productSlice = createSlice({
       .addCase(fetchSigleProduct.fulfilled, (state, action) => {
         state.product = action.payload.product;
         state.similarProducts = action.payload.similarProduct;
-      });
+      })
+      .addCase(fetchSigleProductForEdit.fulfilled, (state, action) => {})
+      .addCase(updateProduct.fulfilled, (state, action) => {});
   },
 });
 

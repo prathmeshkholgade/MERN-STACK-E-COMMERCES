@@ -13,13 +13,34 @@ const createProduct = async (req, res) => {
 };
 const updateProduct = async (req, res, next) => {
   const { id } = req.params;
-  const product = await Product.findByIdAndUpdate(id, req.body, {
+  let updatedProduct = req.body;
+  const product = await Product.findById(id);
+  if (!product) {
+    return next(new ExpressError(500, "Product not found"));
+  }
+  console.log(product);
+  console.log("imgs", req.body.img);
+  console.log(id, req.body);
+  console.log(req.files);
+  if (req.files && req.files.length > 0) {
+    const imgs = req.files.map((file) => ({
+      url: file.path,
+      fileName: file.filename,
+    }));
+    updatedProduct.image = imgs;
+  } else {
+    console.log("saving existing imgs");
+    console.log(product.image);
+    updatedProduct.image = product.image;
+  }
+  console.log(updatedProduct);
+  const updated = await Product.findByIdAndUpdate(id, updatedProduct, {
     new: true,
   });
-  if (!product) {
+  if (!updated) {
     return next(new ExpressError(500, "product not found"));
   }
-  res.json(product).status(200);
+  res.json(updated).status(200);
 };
 const destroyProduct = async (req, res, next) => {
   const { id } = req.params;
@@ -30,7 +51,7 @@ const destroyProduct = async (req, res, next) => {
   res.json({ message: "deleted successfully", deletedProduct });
 };
 const allProduct = async (req, res) => {
-  const products = await Product.find({});
+  const products = await Product.find({}).populate("reviews");
   res.json(products).status(200);
 };
 const fetchSigleProduct = async (req, res, next) => {
@@ -45,8 +66,8 @@ const fetchSigleProduct = async (req, res, next) => {
   const similarProduct = await Product.find({
     category: product.category,
     _id: { $ne: product._id },
-  });
-  console.log("similar", similarProduct);
+  }).populate("reviews");
+  // console.log("similar", similarProduct);
   res.status(200).json({ product, similarProduct });
 };
 module.exports = {

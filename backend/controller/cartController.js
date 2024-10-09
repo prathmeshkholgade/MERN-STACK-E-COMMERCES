@@ -1,8 +1,10 @@
 const Product = require("../models/productModel");
 const ExpressError = require("../utils/ExpressError");
 const Cart = require("../models/cartModel");
+const { json } = require("express");
 
-const addToCart = async (req, res) => {
+const addToCart = async (req, res,next) => {
+  console.log(req.body);
   const { productId, quantity } = req.body;
   const userId = req.user.id;
   const product = await Product.findById(productId);
@@ -65,4 +67,13 @@ const deleteFormCart = async (req, res, next) => {
   res.json({ message: "cart item deleted", cart });
 };
 
-module.exports = { addToCart, deleteFormCart };
+const fetchCurrUserCart = async (req, res, next) => {
+  const userId = req.user._id;
+  let cart = await Cart.findOne({ user: userId }).populate("items.product");
+  if (!cart) {
+    return next(new ExpressError(400, "no product found"));
+  }
+  res.status(200).json(cart);
+};
+
+module.exports = { addToCart, deleteFormCart, fetchCurrUserCart };

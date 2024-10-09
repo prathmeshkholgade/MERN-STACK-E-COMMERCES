@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { createProduct } from "../../app/features/products/productSlice";
-import categories from "../../utils/category";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createProduct,
+  fetchSigleProduct,
+  fetchSigleProductForEdit,
+  updateProduct,
+} from "../app/features/products/productSlice";
+import categories from "../utils/category";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 export default function AddProduct() {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -12,7 +20,23 @@ export default function AddProduct() {
     setError,
     formState: { errors, isSubmitting },
   } = useForm();
+  const [isEditMode, setisEditMode] = useState(false);
+  const product = useSelector((state) => state.Product.product);
+  console.log(product);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (id) {
+      setisEditMode(true);
+      const fetchData = async () => {
+        const res = await dispatch(fetchSigleProduct(id));
+        reset(res.payload.product);
+        console.log(res);
+      };
+      fetchData();
+    }
+  }, [id, dispatch, reset]);
+
   const onSubmit = async (data) => {
     try {
       console.log(data);
@@ -23,9 +47,18 @@ export default function AddProduct() {
         });
       }
       const formData = new FormData();
-      for (let i = 0; i < data.img.length; i++) {
-        formData.append("img", data.img[i]);
+      if (data.img && data.img.length > 0) {
+        for (let i = 0; i < data.img.length; i++) {
+          formData.append("img", data.img[i]);
+        }
+      } else if (isEditMode && product.image) {
+        console.log("edition");
+        // formData.append("img", product.image);
+        for (let existingImage of product.image) {
+          formData.append("img", JSON.stringify(existingImage)); // Adjust this line according to your existing image structure
+        }
       }
+
       formData.append("name", data.name);
       formData.append("description", data.description);
       formData.append("price", data.price);
@@ -33,14 +66,25 @@ export default function AddProduct() {
       formData.append("countInStock", data.countInStock);
       formData.append("category", data.category);
       console.log(formData);
-      const res = await dispatch(createProduct(formData)).unwrap();
+      if (isEditMode) {
+        console.log("edition is processing");
+        console.log(data);
+        console.log(formData);
+        const res = await dispatch(
+          updateProduct({ id, data: formData })
+        ).unwrap();
+        console.log(res);
+        navigate(`/product/${id}`);
+      } else {
+        const res = await dispatch(createProduct(formData)).unwrap();
+      }
       reset();
-      console.log(res);
     } catch (err) {
       console.log(err);
     }
     // console.log(data);
   };
+
   return (
     <div className="flex justify-center items-center w-full h-full">
       <form
@@ -59,7 +103,9 @@ export default function AddProduct() {
             id="img"
             multiple
             {...register("img", {
-              required: { value: true, message: "Please Upload Images" },
+              required: !id
+                ? { value: true, message: "Please upload images" }
+                : false,
             })}
             className="w-full  mt-2 border-2 border-gray-200 p-1 rounded-md"
           />
@@ -175,15 +221,7 @@ export default function AddProduct() {
               </optgroup>
             ))}
           </select>
-          {/* <input
-            type="text"
-            id="category"
-            placeholder="Electronics,Washing Machine ..."
-            className="w-full rounded-md p-1 border-2 border-gray-200"
-            {...register("category", {
-              required: { value: true, message: "Enter Product Category" },
-            })}
-          /> */}
+
           {errors.category && (
             <p className="text-red-700">{errors.category.message}</p>
           )}
@@ -199,7 +237,11 @@ export default function AddProduct() {
             disabled={isSubmitting}
             className={`bg-green-300 p-1 w-1/2 rounded-md hover:bg-blue-400 border-2 border-gray-200"`}
           >
-            {isSubmitting ? "Submitting.." : "Add"}
+            {isSubmitting
+              ? "Submitting.."
+              : isEditMode
+              ? "Update Product"
+              : "Add"}
           </button>
         </div>
       </form>
