@@ -14,8 +14,12 @@ const productRouter = require("./routes/productRoutes");
 const userRouter = require("./routes/userRoutes");
 const reviewRoute = require("./routes/reviewRoutes");
 const cartRoutes = require("./routes/cartRoutes");
+const addressRoutes = require("./routes/addressRoutes");
+const Razorpay = require("razorpay");
+const paymentsRoutes = require("./routes/orderRoutes");
 const Review = require("./models/reviewModel");
 const Cart = require("./models/cartModel");
+
 const cors = require("cors");
 
 const sessionOptions = {
@@ -55,7 +59,8 @@ app.use("/product", productRouter);
 app.use("/review", reviewRoute);
 app.use("/", userRouter);
 app.use("/cart", cartRoutes);
-
+app.use("/address", addressRoutes);
+app.use("/order", paymentsRoutes);
 app.use((err, req, res, next) => {
   let { status = 500, message = "something went wrong " } = err;
   res.status(status).json(message);

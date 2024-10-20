@@ -67,7 +67,9 @@ export const createProduct = createAsyncThunk(
   "product/add",
   async (data, thunkAPI) => {
     try {
-      const res = await axios.post(`${baseUrl}/product/add`, data);
+      const res = await axios.post(`${baseUrl}/product/add`, data, {
+        withCredentials: true,
+      });
       console.log(res);
       return res.data;
     } catch (err) {

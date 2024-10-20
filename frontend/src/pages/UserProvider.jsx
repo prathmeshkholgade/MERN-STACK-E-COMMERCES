@@ -4,7 +4,7 @@ import { fetchCurrUser } from "../app/features/auth/authSlice";
 
 export default function UserProvider({ children }) {
   const user = useSelector((state) => state.Auth.User);
-  console.log(user);
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchCurrUser());

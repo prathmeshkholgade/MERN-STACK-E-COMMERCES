@@ -3,7 +3,7 @@ const ExpressError = require("../utils/ExpressError");
 const Cart = require("../models/cartModel");
 const { json } = require("express");
 
-const addToCart = async (req, res,next) => {
+const addToCart = async (req, res, next) => {
   console.log(req.body);
   const { productId, quantity } = req.body;
   const userId = req.user.id;
@@ -67,6 +67,27 @@ const deleteFormCart = async (req, res, next) => {
   res.json({ message: "cart item deleted", cart });
 };
 
+const updateQuantityOfCart = async (req, res, next) => {
+  const { productId } = req.params;
+  const { quantity } = req.body;
+  const userId = req.user._id;
+  let carts = await Cart.findOne({ user: userId });
+  // Find the product in the cart
+  let productFound = false;
+  carts.items.forEach((product) => {
+    if (product.product.toString() === productId) {
+      product.quantity = quantity; // Update the quantity
+      productFound = true; // Mark the product as found
+    }
+  });
+  // If the product was not found, return an error
+  if (!productFound) {
+    return next(new ExpressError(404, "Product not found in cart"));
+  }
+  await carts.save();
+  res.status(200).json({ carts });
+};
+
 const fetchCurrUserCart = async (req, res, next) => {
   const userId = req.user._id;
   let cart = await Cart.findOne({ user: userId }).populate("items.product");
@@ -76,4 +97,9 @@ const fetchCurrUserCart = async (req, res, next) => {
   res.status(200).json(cart);
 };
 
-module.exports = { addToCart, deleteFormCart, fetchCurrUserCart };
+module.exports = {
+  addToCart,
+  deleteFormCart,
+  fetchCurrUserCart,
+  updateQuantityOfCart,
+};

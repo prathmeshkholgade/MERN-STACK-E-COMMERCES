@@ -14,6 +14,8 @@ import Dashboard from "./pages/products/Dashboard.jsx";
 import CartPage from "./pages/products/CartPage.jsx";
 import AddProductpage from "./pages/products/AddProductpage.jsx";
 import EditPage from "./pages/products/EditPage.jsx";
+import CheckOutPage from "./pages/products/CheckOutPage.jsx";
+import Protected from "./pages/Protected.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -38,11 +40,22 @@ export const router = createBrowserRouter([
       },
       {
         path: "add",
-        element: <AddProductpage />,
+
+        element: (
+          <Protected adminOnly={true}>
+            {" "}
+            <AddProductpage />
+          </Protected>
+        ),
       },
       {
         path: "edit/:id",
-        element: <EditPage />,
+        element: (
+          <Protected adminOnly={true}>
+            {" "}
+            <EditPage />
+          </Protected>
+        ),
       },
       {
         path: "cart",
@@ -51,6 +64,10 @@ export const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "checkout",
+        element: <CheckOutPage />,
       },
     ],
   },

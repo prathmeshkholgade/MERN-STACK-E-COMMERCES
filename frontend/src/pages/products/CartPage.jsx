@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserCart } from "../../app/features/cart/cartSlice";
 import ProductCart from "../../components/ProductCart";
+import CheckOut from "../../components/CheckOut";
 
 export default function CartPage() {
   const dispatch = useDispatch();
@@ -13,6 +14,20 @@ export default function CartPage() {
       console.log(err);
     }
   };
+  const subTotal =
+    cartsProduct &&
+    cartsProduct.reduce((total, product) => {
+      console.log(total);
+      console.log(product.product);
+      return total + product.product.price * product.quantity;
+    }, 0);
+  const total =
+    cartsProduct &&
+    cartsProduct.reduce((total, product) => {
+      console.log(total);
+      console.log(product.product);
+      return total + product.product.sellingPrice * product.quantity;
+    }, 0);
   useEffect(() => {
     loadData();
   }, [dispatch]);
@@ -35,8 +50,8 @@ export default function CartPage() {
             ))}
           </div>
         </div>
-        <div className="bg-red-400 flex-grow">
-          <h3>CheckOut</h3>
+        <div className="flex justify-center  flex-grow">
+          <CheckOut subTotal={subTotal}  total={total}/>
         </div>
       </div>
     </div>

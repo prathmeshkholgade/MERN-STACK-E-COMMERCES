@@ -8,11 +8,12 @@ const {
   deleteFormCart,
   addToCart,
   fetchCurrUserCart,
+  updateQuantityOfCart,
 } = require("../controller/cartController");
 const router = express.Router();
 
 router.post("/", isLoggedIn, wrapAsync(addToCart));
 router.get("/", isLoggedIn, wrapAsync(fetchCurrUserCart));
 router.delete("/:productId", isLoggedIn, wrapAsync(deleteFormCart));
-
+router.put("/:productId", isLoggedIn, wrapAsync(updateQuantityOfCart));
 module.exports = router;

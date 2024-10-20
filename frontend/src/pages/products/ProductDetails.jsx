@@ -1,17 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { fetchSigleProduct } from "../../app/features/products/productSlice";
 import ReviewInput from "../../components/ReviewInput";
 import ReviewCard from "../../components/ReviewCard";
 import ProductCard from "../../components/ProductCard";
 import Pagination from "../../components/Pagination";
 import { addToCart } from "../../app/features/cart/cartSlice";
+import { setCheckOutProducts } from "../../app/features/order/checkOutSlice";
 
 export default function ProductDetails() {
   const { id } = useParams();
   const { product, similarProducts } = useSelector((state) => state.Product);
   const reviews = useSelector((state) => state?.Product?.product?.reviews);
+  const isAdmin = useSelector((state) => state?.Auth?.User?.isAdmin);
   const dispatch = useDispatch();
   const [currImg, setcurrImg] = useState(0);
   const imgContainerRef = useRef(null); // Ref for the image container
@@ -19,6 +21,7 @@ export default function ProductDetails() {
   const [startX, setStartX] = useState(0); // Starting x position for drag
   const [scrollLeft, setScrollLeft] = useState(0); // Scroll position when drag starts
   const [currPage, setcurrPage] = useState(1);
+  const navigate = useNavigate();
   const reviewsPerPage = 6;
   const pageCount = Math.ceil(reviews?.length / reviewsPerPage);
   const fetchProduct = async (id) => {
@@ -59,6 +62,10 @@ export default function ProductDetails() {
       const walk = (x - startX) * 2; // Distance scrolled (multiplied for faster scroll)
       container.scrollLeft = scrollLeft - walk; // Set the new scroll position
     }
+  };
+  const handleCheckOut = () => {
+    dispatch(setCheckOutProducts([{ product, quantity: 1 }]));
+    navigate("/checkout");
   };
 
   // Mouse Up (end drag)
@@ -117,27 +124,30 @@ export default function ProductDetails() {
             </div>
 
             <div className="btns   bg-white py-4 px-2 lg:px-8">
-              <div className="py-2 flex gap-8">
-                <Link to={`/edit/${product._id}`}>
-                  {" "}
-                  <button className="bg-red-600 text-white py-1 px-6 rounded-md">
-                    Edit
+              {isAdmin && (
+                <div className="py-2 flex gap-8">
+                  <Link to={`/edit/${product._id}`}>
+                    {" "}
+                    <button className="bg-red-600 text-white py-1 px-6 rounded-md">
+                      Edit
+                    </button>
+                  </Link>
+                  <button className="py-1 px-6 rounded-md bg-red-600 text-white">
+                    Delete
                   </button>
-                </Link>
-                <button className="py-1 px-6 rounded-md bg-red-600 text-white">
-                  Delete
-                </button>
-              </div>
+                </div>
+              )}
               <div className="flex lg:text-lg gap-8 ">
                 <button
                   className="bg-[#1c252e] hover:bg-opacity-80  py-2 px-4  rounded-md text-white font-medium "
-                  onClick={() =>
-                    handleAddToCart({ productId: product._id, quantity: 1 })
-                  }
+                  onClick={() => handleAddToCart({ productId: product._id })}
                 >
                   Add to cart
                 </button>
-                <button className="bg-[#fb641b] py-2 px-6  rounded-md text-white font-medium hover:bg-[#ae653d] ">
+                <button
+                  onClick={handleCheckOut}
+                  className="bg-[#fb641b] py-2 px-6  rounded-md text-white font-medium hover:bg-[#ae653d] "
+                >
                   Buy now
                 </button>
               </div>
@@ -163,7 +173,7 @@ export default function ProductDetails() {
           </div>
         )}
       </div>
-      <div className="rating input bg-gray-400 mb-4">
+      <div className="rating input mb-4">
         <ReviewInput />
       </div>
       <div>

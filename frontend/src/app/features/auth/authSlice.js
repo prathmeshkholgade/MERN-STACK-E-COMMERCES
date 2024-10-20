@@ -58,7 +58,7 @@ export const fetchCurrUser = createAsyncThunk(
       const res = await axios.get(`${baseUrl}/user`, {
         withCredentials: true,
       });
-      console.log(res);
+
       return res.data;
     } catch (error) {
       console.log(error);
@@ -66,7 +66,36 @@ export const fetchCurrUser = createAsyncThunk(
     }
   }
 );
-
+export const addAddress = createAsyncThunk(
+  "user/addAddress",
+  async (data, thunkAPI) => {
+    try {
+      const res = await axios.post(`${baseUrl}/address`, data, {
+        withCredentials: true,
+      });
+      thunkAPI.dispatch(fetchCurrUser());
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+export const deleteAddress = createAsyncThunk(
+  "user/deleteAddress",
+  async (id, thunkAPI) => {
+    try {
+      const res = await axios.delete(`${baseUrl}/address/${id}`, {
+        withCredentials: true,
+      });
+      thunkAPI.dispatch(fetchCurrUser());
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -87,7 +116,9 @@ const authSlice = createSlice({
       })
       .addCase(logoutUser.fulfilled, (state, action) => {
         state.User = null;
-      });
+      })
+      .addCase(addAddress.fulfilled, (state, action) => {})
+      .addCase(deleteAddress.fulfilled, (state, action) => {});
   },
 });
 
