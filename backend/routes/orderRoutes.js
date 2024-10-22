@@ -3,6 +3,9 @@ const Razorpay = require("razorpay");
 const wrapAsync = require("../utils/wrapAsync");
 const router = express.Router();
 const crypto = require("crypto");
+const Order = require("../models/orderModel");
+const User = require("../models/userModel");
+const ExpressError = require("../utils/ExpressError");
 const instance = new Razorpay({
   key_id: process.env.RAZORPAY_API_KEY,
   key_secret: process.env.RAZORPAY_SECRET,
@@ -10,17 +13,39 @@ const instance = new Razorpay({
 router.post(
   "/payment",
   wrapAsync(async (req, res, next) => {
-    const { amount } = req.body;
+    const { amount, products, userId, shhippingAddress, totalQuantity } =
+      req.body;
     console.log(req.body);
     const options = {
       amount: amount * 100,
       currency: "INR",
     };
     const order = await instance.orders.create(options);
+
+    const newOrder = new Order({
+      user: userId,
+      orderItems: products,
+      totalPrice: amount,
+      shippingAddress: shhippingAddress,
+      totalQuantity: totalQuantity,
+      paymentInfo: {
+        razorpayOrderId: order.id,
+      },
+      paymentMethod: "netbanking",
+    });
+    const result = await newOrder.save();
+    console.log(result);
     console.log(order);
     res.status(200).json({ order });
   })
 );
+
+const addOrderToTheUser = async (userId, orderId) => {
+  const user = await User.findById(userId);
+  user.orders.push(orderId);
+  await user.save();
+};
+
 router.post(
   "/payment/verification",
   wrapAsync(async (req, res, next) => {
@@ -36,7 +61,21 @@ router.post(
       .update(body.toString())
       .digest("hex");
     const isAuthenticated = expectedSignature === razorpay_signature;
+
+    const order = await Order.findOne({
+      "paymentInfo.razorpayOrderId": razorpay_order_id,
+    });
+
     if (isAuthenticated) {
+      order.paymentInfo.razorpayPaymentId = razorpay_payment_id;
+      order.paymentInfo.razorpaySignature = razorpay_signature;
+      order.isPaymentPaid = true;
+      order.paidAt = new Date();
+
+      await order.save(); // Save the updated order details
+      console.log("this is that that which is found in updated db", order);
+      addOrderToTheUser(req.user._id, order._id);
+
       console.log("payment verifyed successfully");
       res.status(200).json({ success: true });
     } else {
@@ -47,22 +86,31 @@ router.post(
     console.log(req.body);
   })
 );
+router.get(
+  "/:id",
+  wrapAsync(async (req, res, next) => {
+    const id = req.params.id;
+    const order = await Order.findById(id)
+      .populate("shippingAddress")
+      .populate("orderItems.product")
+      .populate("user");
+    if (!order) {
+      return next(new ExpressError(404, "order not found"));
+    }
+    res.status(200).json(order);
+  })
+);
+router.get(
+  "/",
+  wrapAsync(async (req, res, next) => {
+    const orders = await Order.find()
+      .populate("shippingAddress")
+      .populate("orderItems.product")
+      .populate("user");
+    if (!orders) {
+      return next(new ExpressError(404, "order not found"));
+    }
+    res.status(200).json(orders);
+  })
+);
 module.exports = router;
-// const generated_signature = hmac_sha256(
-//   razorpay_order_id + "|" + razorpay_payment_id,
-//   process.env.RAZORPAY_SECRET
-// );
-
-// if (generated_signature == razorpay_signature) {
-//   console.log("  payment is successful");
-// }
-
-// const {
-//   validatePaymentVerification,
-//   validateWebhookSignature,
-// } = require("./dist/utils/razorpay-utils");
-// validatePaymentVerification(
-//   { order_id: razorpay_order_id, payment_id: razorpay_payment_id },
-//   generated_signature,
-//   process.env.RAZORPAY_SECRET
-// );

@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* body {
+  background-color: #f1f3f6;
+} */
 /* Hide scrollbar by default */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;

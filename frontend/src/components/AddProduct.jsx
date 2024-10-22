@@ -9,6 +9,7 @@ import {
 } from "../app/features/products/productSlice";
 import categories from "../utils/category";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import SideBar from "./SideBar";
 export default function AddProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -86,9 +87,12 @@ export default function AddProduct() {
   };
 
   return (
-    <div className="flex justify-center items-center w-full h-full">
+    <div className="flex justify-center items-center w-full h-full ">
+      <div className=" w-[40%] sm:w-[30%] md:w-[20%] h-screen">
+        <SideBar />
+      </div>
       <form
-        className="md:w-[60%] m-auto p-4 flex flex-col justify-center items-center  "
+        className="md:w-[60%] m-auto p-4 flex flex-col justify-center items-center bg-white "
         onSubmit={handleSubmit(onSubmit)}
         encType="multipart/form-data"
       >

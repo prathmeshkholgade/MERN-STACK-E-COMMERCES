@@ -18,7 +18,15 @@ export default function CheckOut({
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const cartsProduct = useSelector((state) => state?.Cart?.Cart?.items);
-  const products = useSelector((state) => state?.CheckOut?.products);
+  const checkOutProducts = useSelector((state) => state?.CheckOut?.products);
+  const totalQuantity =
+    checkOutProducts &&
+    checkOutProducts.reduce((currV, product) => {
+      console.log(currV);
+      console.log(product);
+      return currV + product.quantity;
+    }, 0);
+  console.log(totalQuantity);
   const user = useSelector((state) => state?.Auth?.User);
   const dispatch = useDispatch();
   const handleCheckOut = async () => {
@@ -37,12 +45,23 @@ export default function CheckOut({
       if (paymentMode && paymentMode === "cod") {
         console.log(" cod payment is prosessing");
       } else if (paymentMode && paymentMode === "netbanking") {
-        const products = products.map((product) => {});
+        const products = checkOutProducts.map((product) => ({
+          product: product.product._id,
+          productName: product.product.name,
+          quantity: product.quantity,
+          price: product.product.sellingPrice,
+          totalprice: product.quantity * product.product.sellingPrice,
+        }));
+        console.log(products);
         const orderData = {
           amount: total,
           userId: user._id,
+          products: products,
+          shhippingAddress: selectedAddress,
+          totalQuantity: totalQuantity,
         };
-        const response = await dispatch(checkOut({ amount: total })).unwrap();
+        console.log(orderData);
+        const response = await dispatch(checkOut(orderData)).unwrap();
         console.log(response);
         const options = {
           key: import.meta.env.VITE_RAZORPAY_KEY,

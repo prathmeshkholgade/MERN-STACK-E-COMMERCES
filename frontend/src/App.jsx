@@ -16,6 +16,10 @@ import AddProductpage from "./pages/products/AddProductpage.jsx";
 import EditPage from "./pages/products/EditPage.jsx";
 import CheckOutPage from "./pages/products/CheckOutPage.jsx";
 import Protected from "./pages/Protected.jsx";
+import UserOrderPage from "./pages/products/userOrderPage.jsx";
+import OrderDetailsPage from "./pages/products/OrderDetailsPage.jsx";
+import AdminOrder from "./pages/products/AdminOrder.jsx";
+import AdminOrderDetails from "./components/Admin/AdminOrderDetails.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -62,12 +66,28 @@ export const router = createBrowserRouter([
         element: <CartPage />,
       },
       {
+        path: "orders",
+        element: <UserOrderPage />,
+      },
+      {
         path: "dashboard",
         element: <Dashboard />,
       },
       {
         path: "checkout",
         element: <CheckOutPage />,
+      },
+      {
+        path: "order/:id",
+        element: <OrderDetailsPage />,
+      },
+      {
+        path: "admin/order",
+        element: <AdminOrder />,
+      },
+      {
+        path: "orders/:id",
+        element: <AdminOrderDetails />,
       },
     ],
   },

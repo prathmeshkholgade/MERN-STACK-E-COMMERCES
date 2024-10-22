@@ -7,6 +7,7 @@ import CheckOut from "../../components/CheckOut";
 export default function CartPage() {
   const dispatch = useDispatch();
   const cartsProduct = useSelector((state) => state.Cart?.Cart?.items);
+  
   const loadData = async () => {
     try {
       const response = await dispatch(fetchUserCart()).unwrap();
@@ -17,15 +18,15 @@ export default function CartPage() {
   const subTotal =
     cartsProduct &&
     cartsProduct.reduce((total, product) => {
-      console.log(total);
-      console.log(product.product);
+      // console.log(total);
+      // console.log(product.product);
       return total + product.product.price * product.quantity;
     }, 0);
   const total =
     cartsProduct &&
     cartsProduct.reduce((total, product) => {
-      console.log(total);
-      console.log(product.product);
+      // console.log(total);
+      // console.log(product.product);
       return total + product.product.sellingPrice * product.quantity;
     }, 0);
   useEffect(() => {

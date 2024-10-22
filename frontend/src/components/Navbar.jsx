@@ -38,12 +38,12 @@ export default function Navbar() {
     },
     {
       icon: <DashboardIcon fontSize="small" sx={color} />,
-      path: "/",
+      path: "/admin/order",
       name: "Dashboard",
     },
     {
       icon: <AllInboxIcon fontSize="small" sx={color} />,
-      path: "/",
+      path: "/orders",
       name: "Orders",
     },
     {

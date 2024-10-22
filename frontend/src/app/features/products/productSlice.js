@@ -24,6 +24,7 @@ export const addReview = createAsyncThunk(
       const res = await axios.post(`${baseUrl}/review/${id}`, data, {
         withCredentials: true,
       });
+      await thunkAPI.dispatch(fetchSigleProduct(id));
       console.log(res);
       return res.data;
     } catch (err) {
@@ -115,7 +116,6 @@ const productSlice = createSlice({
         state.loading = true;
       })
       .addCase(loadProducts.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.products = action.payload;
       })
       .addCase(fetchSigleProduct.fulfilled, (state, action) => {

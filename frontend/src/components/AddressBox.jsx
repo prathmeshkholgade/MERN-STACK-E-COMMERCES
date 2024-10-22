@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { deleteAddress } from "../app/features/auth/authSlice";
 export default function addressBox({ address, idx, onSelectAddress }) {
+  console.log(address);
   const { register } = useForm();
   const addresses = useSelector((state) => state?.Auth?.User?.addresses);
   const disptach = useDispatch();
@@ -32,9 +33,10 @@ export default function addressBox({ address, idx, onSelectAddress }) {
               <span className="font-bold">
                 {address.fristName} {address.lastName}
               </span>{" "}
-              <span>{address.locality}</span> <span>{address.landmark}</span>{" "}
-              <span>{address.city}</span> <span>{address.state}</span>{" "}
-              <span>{address.zipCode}</span>
+              <span>{address.address}</span> <span>{address.landmark}</span>{" "}
+              <span>{address.city}</span> <span>{address.zipCode}</span>
+              {""}
+              <span>{address.state}</span>
             </p>{" "}
           </div>
         </div>

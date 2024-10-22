@@ -34,14 +34,32 @@ export const paymentVerify = createAsyncThunk(
     }
   }
 );
+export const getUserOrders = createAsyncThunk(
+  "product/userOrder",
+  async (id, thunkAPI) => {
+    try {
+      const response = await axios.get(`${baseUrl}/order/${id}`, {
+        withCredentials: true,
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
+  }
+);
 const checkOutSlice = createSlice({
   name: "checkOut",
   initialState: {
     products: [],
+    userOrders: null,
   },
   extraReducers: (builder) => {
     builder.addCase(checkOut.fulfilled, (state, action) => {});
     builder.addCase(paymentVerify.fulfilled, (state, action) => {});
+    builder.addCase(getUserOrders.fulfilled, (state, action) => {
+      state.userOrders = action.payload;
+    });
   },
   reducers: {
     setCheckOutProducts: (state, action) => {
