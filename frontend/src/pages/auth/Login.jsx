@@ -32,7 +32,7 @@ export default function Login() {
   };
   return (
     <>
-      <div className=" w-full h-full flex flex-col items-center relative">
+      <div className=" w-full h-screen flex flex-col items-center relative">
         <div className=" p-4 absolute top-24">
           <div className="text-center my-6">
             <h3 className="font-bold text-xl">Login to your account</h3>

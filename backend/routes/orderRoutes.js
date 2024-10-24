@@ -26,7 +26,20 @@ router.post(
       user: userId,
       orderItems: products,
       totalPrice: amount,
-      shippingAddress: shhippingAddress,
+      shippingAddress: {
+        firstName: shhippingAddress.fristName,
+        landmark: shhippingAddress.landmark,
+        lastName: shhippingAddress.lastName,
+        address: shhippingAddress.address,
+        city: shhippingAddress.city,
+        state: shhippingAddress.state,
+        zipCode: shhippingAddress.zipCode,
+        email: shhippingAddress.email,
+        addressId: shhippingAddress._id,
+        user: shhippingAddress.user,
+        number: shhippingAddress.number,
+        alternateNumber: shhippingAddress.alternateNumber,
+      },
       totalQuantity: totalQuantity,
       paymentInfo: {
         razorpayOrderId: order.id,
@@ -84,6 +97,18 @@ router.post(
 
     console.log(expectedSignature);
     console.log(req.body);
+  })
+);
+router.put(
+  "/:id",
+  wrapAsync(async (req, res, next) => {
+    const id = req.params.id;
+    const { status } = req.body;
+    console.log(req.body);
+    const order = await Order.findById(id);
+    console.log(order);
+    order.orderStatus = status;
+    await order.save();
   })
 );
 router.get(

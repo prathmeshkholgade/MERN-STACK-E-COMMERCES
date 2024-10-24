@@ -61,14 +61,16 @@ export default function AdminOrder() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {orders.map((order) => (
-                  <AdminOrderCard order={order} />
-                ))}
+                {orders
+                  .slice()
+                  .reverse()
+                  .map((order) => (
+                    <AdminOrderCard order={order} />
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
         </div>
-     
       </div>
     </div>
   );

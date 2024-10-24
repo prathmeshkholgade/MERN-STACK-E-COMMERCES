@@ -5,11 +5,11 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-export default function SelectBox({ option ,defaultValue}) {
+export default function SelectBox({ option, defaultValue, setOrderStatus }) {
   const [age, setAge] = useState("");
 
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setOrderStatus(event.target.value);
   };
   return (
     <div className="w-40">

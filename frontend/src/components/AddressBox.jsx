@@ -12,9 +12,10 @@ export default function addressBox({ address, idx, onSelectAddress }) {
     disptach(deleteAddress(address._id));
   };
 
-  const handleSelect = (e) => {
-    console.log(e.target.value);
-    onSelectAddress(e.target.value); // Pass the selected address ID to the parent
+  const handleSelect = (address) => {
+  
+    console.log(address);
+    onSelectAddress(address); // Pass the selected address ID to the parent
   };
   return (
     address && (
@@ -23,11 +24,11 @@ export default function addressBox({ address, idx, onSelectAddress }) {
           <div className="flex items-center ">
             <input
               type="radio"
-              value={address._id}
+              value={JSON.stringify(address)}
               className="pr-4"
               {...register("address", { required: true })}
               // defaultChecked={idx === addresses.length - 1}
-              onChange={handleSelect}
+              onChange={() => handleSelect(address)}
             />
             <p className="p-2 text-lg tracking-normal">
               <span className="font-bold">

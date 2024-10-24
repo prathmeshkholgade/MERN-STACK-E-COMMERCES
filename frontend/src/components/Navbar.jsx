@@ -36,11 +36,15 @@ export default function Navbar() {
       path: "/",
       name: "My Profile",
     },
-    {
-      icon: <DashboardIcon fontSize="small" sx={color} />,
-      path: "/admin/order",
-      name: "Dashboard",
-    },
+    ...(user?.isAdmin
+      ? [
+          {
+            icon: <DashboardIcon fontSize="small" sx={color} />,
+            path: "/admin/order",
+            name: "Dashboard",
+          },
+        ]
+      : []),
     {
       icon: <AllInboxIcon fontSize="small" sx={color} />,
       path: "/orders",
@@ -55,7 +59,10 @@ export default function Navbar() {
   return (
     <div className="flex px-2 md:px-4 lg:px-0 py-4 bg-gray-50 shadow-lg justify-between lg:justify-evenly relative">
       <div className="text-sm flex items-center">
-        <p className=" ">E-Commerce</p>
+        <Link to={"/"}>
+          {" "}
+          <p className="text-lg">New Samarat Enterprises</p>{" "}
+        </Link>
       </div>
 
       <div className="hidden md:flex ">

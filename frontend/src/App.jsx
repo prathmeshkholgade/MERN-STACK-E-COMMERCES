@@ -71,11 +71,20 @@ export const router = createBrowserRouter([
       },
       {
         path: "dashboard",
-        element: <Dashboard />,
+        element: (
+          <Protected adminOnly={true}>
+            <Dashboard />
+          </Protected>
+        ),
       },
       {
         path: "checkout",
-        element: <CheckOutPage />,
+        element: (
+          <Protected>
+            {" "}
+            <CheckOutPage />
+          </Protected>
+        ),
       },
       {
         path: "order/:id",
@@ -83,11 +92,21 @@ export const router = createBrowserRouter([
       },
       {
         path: "admin/order",
-        element: <AdminOrder />,
+
+        element: (
+          <Protected adminOnly={true}>
+            {" "}
+            <AdminOrder />{" "}
+          </Protected>
+        ),
       },
       {
         path: "orders/:id",
-        element: <AdminOrderDetails />,
+        element: (
+          <Protected adminOnly={true}>
+            <AdminOrderDetails />{" "}
+          </Protected>
+        ),
       },
     ],
   },

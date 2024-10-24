@@ -14,6 +14,7 @@ export default function CheckOutPage() {
   const address = useSelector((state) => state?.Auth?.User?.addresses);
   const [selectedPayment, setSelectedPayment] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("");
+  console.log(selectedAddress);
   const [showForm, setshowForm] = useState(false);
 
   const handlePaymentChange = (value) => {
@@ -28,8 +29,8 @@ export default function CheckOutPage() {
   const subTotal =
     products &&
     products.reduce((total, product) => {
-      console.log(total);
-      console.log(product.product);
+      // console.log(total);
+      // console.log(product.product);
       return total + product.product.price * product.quantity;
     }, 0);
   const total =
@@ -41,10 +42,10 @@ export default function CheckOutPage() {
     products &&
     products.length > 0 && (
       <div className="mx-auto w-[90%] flex flex-col border md:flex-row flex-wrap ">
-        <div>
+        <div className="md:w-[50%]">
           {address && address.length > 0 ? (
             <>
-              <div>
+              <div className="bg-red-200 ">
                 {address.map((address, idx) => (
                   <AddressBox
                     address={address}

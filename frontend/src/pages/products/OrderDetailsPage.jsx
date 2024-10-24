@@ -26,12 +26,13 @@ export default function OrderDetailsPage() {
     orders && (
       <div className="w-[90%] mx-auto">
         <p>Order Details</p>
+        {/* <div></div> */}
         <div>
           <OrderCard order={orders.orderItems} orderDetails={orders} />
         </div>
-        {/* <div>
+        <div>
           <ShhipingAddress address={orders.shippingAddress} />
-        </div> */}
+        </div>
       </div>
     )
   );

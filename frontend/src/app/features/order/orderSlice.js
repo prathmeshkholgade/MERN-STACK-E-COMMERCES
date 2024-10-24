@@ -31,6 +31,25 @@ export const getUserOrdersInDetails = createAsyncThunk(
     }
   }
 );
+export const updateOrderStatus = createAsyncThunk(
+  "product/updateOrderStatus",
+  async ({ id, status }, thunkAPI) => {
+    console.log(id, status);
+    try {
+      const response = await axios.put(
+        `${baseUrl}/order/${id}`,
+        { status },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
+  }
+);
 const orderSlice = createSlice({
   name: "Order",
   initialState: {
@@ -44,7 +63,8 @@ const orderSlice = createSlice({
       })
       .addCase(getUserOrdersInDetails.fulfilled, (state, action) => {
         state.orderDetails = action.payload;
-      });
+      })
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {});
   },
 });
 

@@ -76,8 +76,8 @@ export default function ProductDetails() {
     fetchProduct(id);
   }, [id]);
   return product ? (
-    <div className="mx-auto w-[90%]  h-full ">
-      <div className="md:flex    py-2    ">
+    <div className="mx-auto w-[90%]  h-full bg-white  ">
+      <div className="md:flex    py-2   ">
         <div className="imgs   md:w-1/2   lg:w-[40%]">
           <div className="p-1 w-full ">
             <img
@@ -176,15 +176,17 @@ export default function ProductDetails() {
       <div className="rating input mb-4">
         <ReviewInput />
       </div>
-      <div>
-        <h2>Similar Products</h2>
-        <div className="flex flex-wrap gap-4">
-          {similarProducts &&
-            similarProducts.map((product, idx) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
+      {similarProducts.length > 0 && (
+        <div>
+          <h2>Similar Products</h2>
+          <div className="flex flex-wrap gap-4">
+            {similarProducts &&
+              similarProducts.map((product, idx) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   ) : (
     <h1>Loading...</h1>

@@ -17,7 +17,7 @@ export default function ProductCard({ product }) {
         <div className="w-full h-40 ">
           <img
             src={`${product.image[0].url}`}
-            className="w-full h-full object-contain hover:scale-105 "
+            className="w-full h-full object-contain hover:scale-105 mix-blend-darken"
           />
         </div>
         <div className="flex flex-col flex-grow p-1  justify-between">

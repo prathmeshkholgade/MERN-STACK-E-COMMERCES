@@ -26,7 +26,7 @@ export default function CheckOut({
       console.log(product);
       return currV + product.quantity;
     }, 0);
-  console.log(totalQuantity);
+  console.log("object",selectedAddress);
   const user = useSelector((state) => state?.Auth?.User);
   const dispatch = useDispatch();
   const handleCheckOut = async () => {
@@ -60,7 +60,7 @@ export default function CheckOut({
           shhippingAddress: selectedAddress,
           totalQuantity: totalQuantity,
         };
-        console.log(orderData);
+        console.log("this is order data which is going to backend",orderData);
         const response = await dispatch(checkOut(orderData)).unwrap();
         console.log(response);
         const options = {

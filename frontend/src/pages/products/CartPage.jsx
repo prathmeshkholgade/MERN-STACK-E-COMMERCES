@@ -7,7 +7,7 @@ import CheckOut from "../../components/CheckOut";
 export default function CartPage() {
   const dispatch = useDispatch();
   const cartsProduct = useSelector((state) => state.Cart?.Cart?.items);
-  
+  const user = useSelector((state) => state?.Auth?.User);
   const loadData = async () => {
     try {
       const response = await dispatch(fetchUserCart()).unwrap();
@@ -32,7 +32,7 @@ export default function CartPage() {
   useEffect(() => {
     loadData();
   }, [dispatch]);
-  return cartsProduct ? (
+  return user && cartsProduct ? (
     <div className=" w-[90%] mx-auto mt-4">
       <h2>Cart</h2>
       <div className="flex flex-col md:flex-row">
@@ -52,7 +52,7 @@ export default function CartPage() {
           </div>
         </div>
         <div className="flex justify-center  flex-grow">
-          <CheckOut subTotal={subTotal}  total={total}/>
+          <CheckOut subTotal={subTotal} total={total} />
         </div>
       </div>
     </div>

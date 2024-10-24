@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 const baseUrl = import.meta.env.VITE_BASE_URL;
+import { logoutUser } from "../auth/authSlice";
 
 export const fetchUserCart = createAsyncThunk(
   "user/cart",
@@ -87,6 +88,7 @@ const cartSlice = createSlice({
         }
       })
       .addCase(updateProductQuantity.fulfilled, (state, action) => {});
+    // .addCase(logoutUser.fulfilled, (state) => (state.Cart = null));
   },
 });
 
