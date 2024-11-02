@@ -23,6 +23,7 @@ export default function Navbar() {
   const user = useSelector((state) => state.Auth.User);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const logOutAction = () => {
     dispatch(logoutUser());
     navigate("/");
@@ -33,7 +34,7 @@ export default function Navbar() {
   const userMenuOptions = [
     {
       icon: <AccountCircleOutlinedIcon fontSize="small" sx={color} />,
-      path: "/",
+      path: "/myprofile",
       name: "My Profile",
     },
     ...(user?.isAdmin
@@ -61,7 +62,8 @@ export default function Navbar() {
       <div className="text-sm flex items-center">
         <Link to={"/"}>
           {" "}
-          <p className="text-lg">New Samarat Enterprises</p>{" "}
+          {/* <p className="text-lg">New Samarat Enterprises</p>{" "} */}
+          <p>E-commerce</p>
         </Link>
       </div>
 

@@ -42,7 +42,7 @@ const orderSchema = new Schema(
         state: { type: String, required: true },
         zipCode: { type: String, required: true },
         number: { type: String, required: true },
-        alternateNumber: { type: String, required: true },
+        alternateNumber: { type: String },
         landmark: { type: String, required: true },
         address: { type: String, required: true },
         addressId: { type: String, required: true },
@@ -77,7 +77,14 @@ const orderSchema = new Schema(
     orderStatus: {
       type: String,
       default: "Pending",
-      enum: ["Pending", "Processing", "Delivered", "Cancelled", "Returned"],
+      enum: [
+        "Pending",
+        "Processing",
+        "Shipping",
+        "Delivered",
+        "Cancelled",
+        "Returned",
+      ],
     },
     paymentInfo: {
       razorpayPaymentId: { type: String, default: null }, // Default to null

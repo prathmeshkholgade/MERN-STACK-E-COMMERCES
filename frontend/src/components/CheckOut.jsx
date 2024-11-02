@@ -26,7 +26,7 @@ export default function CheckOut({
       console.log(product);
       return currV + product.quantity;
     }, 0);
-  console.log("object",selectedAddress);
+  console.log("object", selectedAddress);
   const user = useSelector((state) => state?.Auth?.User);
   const dispatch = useDispatch();
   const handleCheckOut = async () => {
@@ -60,7 +60,7 @@ export default function CheckOut({
           shhippingAddress: selectedAddress,
           totalQuantity: totalQuantity,
         };
-        console.log("this is order data which is going to backend",orderData);
+        console.log("this is order data which is going to backend", orderData);
         const response = await dispatch(checkOut(orderData)).unwrap();
         console.log(response);
         const options = {
@@ -80,7 +80,13 @@ export default function CheckOut({
               razorpay_signature: response.razorpay_signature,
               // orderDetails: orderResponse,
             };
-            dispatch(paymentVerify(paymentData));
+            const verificationResponse = await dispatch(
+              paymentVerify(paymentData)
+            ).unwrap();
+            console.log(verificationResponse);
+            if (verificationResponse.success) {
+              navigate(`/order/${verificationResponse.id}`);
+            }
             console.log(paymentData);
           },
           prefill: {

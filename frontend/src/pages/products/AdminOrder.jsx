@@ -37,8 +37,8 @@ export default function AdminOrder() {
     <div className="flex">
       <div className="bg-red-200 w-[40%] sm:w-[30%] md:w-[20%] h-screen hidden sm:block">
         <SideBar />
-      </div>
-      <div className="p-4 flex-grow">
+      </div> 
+      <div className="p-4 flex-grow h-screen overflow-y-scroll">
         <p className="text-lg">All Orders</p>
         <div className="bg-red-200">
           <TableContainer component={Paper}>

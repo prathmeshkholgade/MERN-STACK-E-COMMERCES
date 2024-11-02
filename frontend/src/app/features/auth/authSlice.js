@@ -81,6 +81,22 @@ export const addAddress = createAsyncThunk(
     }
   }
 );
+export const updateAddress = createAsyncThunk(
+  "user/updateaddAddress",
+  async ({ id, data }, thunkAPI) => {
+    console.log(id, data);
+    try {
+      const res = await axios.put(`${baseUrl}/address/${id}`, data, {
+        withCredentials: true,
+      });
+      thunkAPI.dispatch(fetchCurrUser());
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error.response || error.response.data);
+    }
+  }
+);
 export const deleteAddress = createAsyncThunk(
   "user/deleteAddress",
   async (id, thunkAPI) => {
@@ -118,7 +134,8 @@ const authSlice = createSlice({
         state.User = null;
       })
       .addCase(addAddress.fulfilled, (state, action) => {})
-      .addCase(deleteAddress.fulfilled, (state, action) => {});
+      .addCase(deleteAddress.fulfilled, (state, action) => {})
+      .addCase(updateAddress.fulfilled, (state, action) => {});
   },
 });
 

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserCart } from "../../app/features/cart/cartSlice";
 import ProductCart from "../../components/ProductCart";
 import CheckOut from "../../components/CheckOut";
+import { NavLink } from "react-router-dom";
 
 export default function CartPage() {
   const dispatch = useDispatch();
@@ -57,6 +58,17 @@ export default function CartPage() {
       </div>
     </div>
   ) : (
-    "No product"
+    <>
+      <div className=" sm:w-[80%] flex flex-col justify-center items-center bg-zinc-100  h-96 m-auto p-4">
+        <p className="text-xl">Your Cart is empty</p>
+
+        <p className="my-2">Add Product to it now</p>
+        <NavLink to={"/"}>
+          <button className="bg-blue-400 p-2 rounded-lg w-40 hover:bg-blue-300">
+            Show Now
+          </button>{" "}
+        </NavLink>
+      </div>
+    </>
   );
 }

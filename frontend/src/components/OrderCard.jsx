@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { formatDate } from "../utils/helper";
 export default function OrderCard({ order, orderDetails }) {
   const { id } = useParams();
   const { pathname } = useLocation();
@@ -26,7 +27,10 @@ export default function OrderCard({ order, orderDetails }) {
         className=" border-2 p-2  mt-2 md:w-[80%] lg:w-[70%] bg-white"
         onClick={!id && handleOrderClick}
       >
-        <h4>OrderId: {orderDetails.paymentInfo.razorpayOrderId}</h4>
+        <div className="flex justify-between">
+          <h4>OrderId: {orderDetails.paymentInfo.razorpayOrderId}</h4>{" "}
+          <p> ordered date :{formatDate(orderDetails.createdAt)}</p>
+        </div>
 
         {order.map((order) => (
           //  {id &&  <Link to={`/product/${order.product._id}`}>}

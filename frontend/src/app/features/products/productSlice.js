@@ -33,6 +33,23 @@ export const addReview = createAsyncThunk(
     }
   }
 );
+export const deleteReview = createAsyncThunk(
+  "product/deleteReview",
+  async ({ id, reviewId }, thunkAPI) => {
+    try {
+      const res = await axios.delete(`${baseUrl}/review/${id}/${reviewId}`, {
+        withCredentials: true,
+      });
+      await thunkAPI.dispatch(fetchSigleProduct(id));
+      console.log(res);
+      // thunkAPI.dispatch(fetchSigleProduct())
+      return res.data;
+    } catch (err) {
+      console.log(err);
+      return thunkAPI.rejectWithValue(err.response.data || err.message);
+    }
+  }
+);
 export const fetchSigleProduct = createAsyncThunk(
   "product/sigleProduct",
   async (id, thunkAPI) => {
@@ -123,7 +140,8 @@ const productSlice = createSlice({
         state.similarProducts = action.payload.similarProduct;
       })
       .addCase(fetchSigleProductForEdit.fulfilled, (state, action) => {})
-      .addCase(updateProduct.fulfilled, (state, action) => {});
+      .addCase(updateProduct.fulfilled, (state, action) => {})
+      .addCase(deleteReview.fulfilled, (state, action) => {});
   },
 });
 

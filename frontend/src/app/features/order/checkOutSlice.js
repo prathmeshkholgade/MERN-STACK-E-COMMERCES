@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { act } from "react";
+import { fetchCurrUser } from "../auth/authSlice";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 export const checkOut = createAsyncThunk(
   "product/payment",
@@ -28,6 +29,7 @@ export const paymentVerify = createAsyncThunk(
         }
       );
       console.log(response.data);
+      thunkAPI.dispatch(fetchCurrUser());
       return response.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(err);

@@ -5,7 +5,7 @@ export default function Menu({ opt }) {
   return (
     <>
       <li
-        className="p-2 text-sm font-semibol hover:bg-gray-200 rounded-lg"
+        className="p-2  font-semibol hover:bg-gray-200 rounded-lg"
         onClick={opt.onclick || null}
       >
         {" "}

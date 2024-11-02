@@ -4,6 +4,8 @@ import { useLocation, useParams } from "react-router-dom";
 import { getUserOrders } from "../../app/features/order/checkOutSlice";
 import OrderCard from "../../components/OrderCard";
 import ShhipingAddress from "../../components/ShhipingAddress";
+import OrderTracking from "../../components/order/OrderTracking.jsx";
+
 
 export default function OrderDetailsPage() {
   const { id } = useParams();
@@ -26,7 +28,10 @@ export default function OrderDetailsPage() {
     orders && (
       <div className="w-[90%] mx-auto">
         <p>Order Details</p>
-        {/* <div></div> */}
+      
+        <div className=" md:w-[70%]">
+          <OrderTracking status={orders.orderStatus} />
+        </div>
         <div>
           <OrderCard order={orders.orderItems} orderDetails={orders} />
         </div>

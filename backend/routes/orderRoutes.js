@@ -6,6 +6,8 @@ const crypto = require("crypto");
 const Order = require("../models/orderModel");
 const User = require("../models/userModel");
 const ExpressError = require("../utils/ExpressError");
+const Cart = require("../models/cartModel");
+const Product = require("../models/productModel");
 const instance = new Razorpay({
   key_id: process.env.RAZORPAY_API_KEY,
   key_secret: process.env.RAZORPAY_SECRET,
@@ -74,7 +76,6 @@ router.post(
       .update(body.toString())
       .digest("hex");
     const isAuthenticated = expectedSignature === razorpay_signature;
-
     const order = await Order.findOne({
       "paymentInfo.razorpayOrderId": razorpay_order_id,
     });
@@ -84,13 +85,35 @@ router.post(
       order.paymentInfo.razorpaySignature = razorpay_signature;
       order.isPaymentPaid = true;
       order.paidAt = new Date();
-
       await order.save(); // Save the updated order details
       console.log("this is that that which is found in updated db", order);
       addOrderToTheUser(req.user._id, order._id);
 
+      for (let item of order.orderItems) {
+        console.log("this is item which is deacrising");
+        console.log(item);
+        console.log("this is product  which is being deacrising");
+        let product = await Product.findById(item.product);
+        if (product) {
+          product.countInStock -= item.quantity; // Decrease stock by quantity bought
+          if (product.countInStock < 0) {
+            return next(
+              new ExpressError(400, `Product ${product.name} is out of stock`)
+            );
+          }
+          await product.save(); // Save updated stock count
+        }
+
+        console.log(product);
+      }
+
+      const userCarts = await Cart.findOneAndDelete({ user: req.user._id });
+      // const userCarts = await Cart.find({ user: req.body._id });
+      // await Cart.findByIdAndDelete(userCarts._id);
+      // await userCarts.save();
+      // console.log("this is user cart", userCarts);
       console.log("payment verifyed successfully");
-      res.status(200).json({ success: true });
+      res.status(200).json({ success: true, id: order._id });
     } else {
       res.status(401).json({ success: false });
     }
@@ -109,6 +132,7 @@ router.put(
     console.log(order);
     order.orderStatus = status;
     await order.save();
+    res.status(200).json(order);
   })
 );
 router.get(

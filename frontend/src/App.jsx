@@ -20,6 +20,7 @@ import UserOrderPage from "./pages/products/userOrderPage.jsx";
 import OrderDetailsPage from "./pages/products/OrderDetailsPage.jsx";
 import AdminOrder from "./pages/products/AdminOrder.jsx";
 import AdminOrderDetails from "./components/Admin/AdminOrderDetails.jsx";
+import MyProfilePage from "./pages/auth/MyProfilePage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +42,15 @@ export const router = createBrowserRouter([
       {
         path: "signup",
         element: <Signup />,
+      },
+      {
+        path: "myprofile",
+        element: (
+          <Protected>
+            {" "}
+            <MyProfilePage />
+          </Protected>
+        ),
       },
       {
         path: "add",

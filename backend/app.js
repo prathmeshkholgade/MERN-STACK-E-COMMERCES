@@ -35,7 +35,7 @@ const sessionOptions = {
 app.use(
   cors({
     origin: "http://localhost:5173",
-    methods: ["get", "post", "delete", "put"],
+    methods: ["get", "post", "delete", "put", "patch"],
     allowedHeaders: [
       "Content-Type",
       "Authorization",

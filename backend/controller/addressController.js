@@ -6,6 +6,12 @@ const addAddress = async (req, res, next) => {
   console.log(req.body);
   const user = await User.findById(req.user.id);
   const address = req.body;
+  if (!req.body.fristName && !req.body.lastName) {
+    const [fristName, lastName] = req.body.fullName.split(" ");
+    console.log(fristName, "and ", lastName);
+    address.fristName = fristName;
+    address.lastName = lastName;
+  }
   const newAddress = new Address(address);
   newAddress.user = req.user._id;
   await newAddress.save();

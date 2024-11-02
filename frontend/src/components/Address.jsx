@@ -160,7 +160,7 @@ export default function Address({ showForm, setshowForm }) {
             <div className="">
               <TextField
                 id="outlined-basic"
-                {...register("alternateNumber", { required: { value: true } })}
+                {...register("alternateNumber")}
                 label="Alternate Phone (Optional)"
                 type="text"
                 size="small"

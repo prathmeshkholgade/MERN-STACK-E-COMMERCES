@@ -13,6 +13,7 @@ export default function ProductDetails() {
   const { id } = useParams();
   const { product, similarProducts } = useSelector((state) => state.Product);
   const reviews = useSelector((state) => state?.Product?.product?.reviews);
+  const user = useSelector((state) => state?.Auth?.User);
   const isAdmin = useSelector((state) => state?.Auth?.User?.isAdmin);
   const dispatch = useDispatch();
   const [currImg, setcurrImg] = useState(0);
@@ -21,9 +22,13 @@ export default function ProductDetails() {
   const [startX, setStartX] = useState(0); // Starting x position for drag
   const [scrollLeft, setScrollLeft] = useState(0); // Scroll position when drag starts
   const [currPage, setcurrPage] = useState(1);
+  const [userHasPurchased, setUserHasPurchased] = useState(false);
   const navigate = useNavigate();
   const reviewsPerPage = 6;
   const pageCount = Math.ceil(reviews?.length / reviewsPerPage);
+  const userOrders = useSelector((state) => state?.Auth?.User?.orders);
+  console.log(userOrders);
+
   const fetchProduct = async (id) => {
     try {
       await dispatch(fetchSigleProduct(id)).unwrap();
@@ -74,7 +79,21 @@ export default function ProductDetails() {
   };
   useEffect(() => {
     fetchProduct(id);
-  }, [id]);
+  }, [id, user]);
+  // Check if the user has purchased the product with status "Delivered"
+  useEffect(() => {
+    if (userOrders) {
+      console.log(userOrders);
+      const hasPurchased = userOrders.some((order) => {
+        return (
+          order.orderStatus === "Delivered" &&
+          order.orderItems.some((item) => item.product._id === id)
+        );
+      });
+      console.log(hasPurchased);
+      setUserHasPurchased(hasPurchased);
+    }
+  }, [userOrders, id]);
   return product ? (
     <div className="mx-auto w-[90%]  h-full bg-white  ">
       <div className="md:flex    py-2   ">
@@ -139,14 +158,24 @@ export default function ProductDetails() {
               )}
               <div className="flex lg:text-lg gap-8 ">
                 <button
-                  className="bg-[#1c252e] hover:bg-opacity-80  py-2 px-4  rounded-md text-white font-medium "
+                  className={`py-2 px-4 rounded-md text-white font-medium ${
+                    product.countInStock === 0
+                      ? "bg-[#1c252e] opacity-50 cursor-not-allowed"
+                      : "bg-[#1c252e] hover:bg-opacity-80"
+                  }`}
                   onClick={() => handleAddToCart({ productId: product._id })}
+                  disabled={product.countInStock === 0}
                 >
                   Add to cart
                 </button>
                 <button
                   onClick={handleCheckOut}
-                  className="bg-[#fb641b] py-2 px-6  rounded-md text-white font-medium hover:bg-[#ae653d] "
+                  className={`py-2 px-6 rounded-md text-white font-medium ${
+                    product.countInStock === 0
+                      ? "bg-[#cf8863] cursor-not-allowed"
+                      : "bg-[#fb641b] hover:bg-[#ae653d]"
+                  }`}
+                  disabled={product.countInStock === 0}
                 >
                   Buy now
                 </button>
@@ -160,7 +189,11 @@ export default function ProductDetails() {
         <div className="flex gap-10 flex-wrap justify-between w-[90%] mx-auto border-b-2 mb-2">
           {reviews &&
             currReviews.map((review, idx) => (
-              <ReviewCard key={review._id} review={review} />
+              <ReviewCard
+                key={review._id}
+                review={review}
+                productId={product._id}
+              />
             ))}
         </div>
         {reviews.length > reviewsPerPage && (
@@ -173,9 +206,11 @@ export default function ProductDetails() {
           </div>
         )}
       </div>
-      <div className="rating input mb-4">
-        <ReviewInput />
-      </div>
+      {user && userHasPurchased && (
+        <div className="rating input mb-4">
+          <ReviewInput />
+        </div>
+      )}
       {similarProducts.length > 0 && (
         <div>
           <h2>Similar Products</h2>

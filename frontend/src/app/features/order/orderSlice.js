@@ -43,7 +43,7 @@ export const updateOrderStatus = createAsyncThunk(
           withCredentials: true,
         }
       );
-      console.log(response.data);
+      // await thunkAPI.dispatch(getUserOrdersInDetails(id));
       return response.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(err);

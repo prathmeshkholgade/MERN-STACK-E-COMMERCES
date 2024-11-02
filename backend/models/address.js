@@ -13,7 +13,7 @@ const addressSchema = new schema({
   state: { type: String, required: true },
   zipCode: { type: String, required: true },
   number: { type: String, required: true },
-  alternateNumber: { type: String, required: true },
+  alternateNumber: { type: String },
   landmark: { type: String, required: true },
   address: { type: String, required: true },
 });

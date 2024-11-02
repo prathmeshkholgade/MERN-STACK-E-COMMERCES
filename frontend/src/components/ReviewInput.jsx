@@ -22,6 +22,7 @@ export default function ReviewInput() {
         data.rating = 1; // Default rating if not selected
       }
       await dispatch(addReview({ id, data })).unwrap();
+      reset();
       console.log(data);
     } catch (err) {
       console.log(err);

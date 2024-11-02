@@ -4,12 +4,10 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { formatDate } from "../../utils/helper";
 export default function AdminOrderCard({ order }) {
   console.log(order);
-  const formatDate = (dateString) => {
-    const options = { day: "2-digit", month: "short", year: "numeric" };
-    return new Date(dateString).toLocaleDateString("en-GB", options);
-  };
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const hanldeOnClick = () => {
@@ -18,7 +16,7 @@ export default function AdminOrderCard({ order }) {
   };
   return (
     <TableRow
-className="hover:bg-zinc-100"
+      className="hover:bg-zinc-100 "
       // key={row.name}
       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
       onClick={hanldeOnClick}

@@ -10,9 +10,12 @@ export default function UserOrderPage() {
       <div className="w-[90%] mx-auto">
         <h3 className="text-xl font-semibold">My Orders</h3>
         <div className="mb-2">
-          {userOrder.map((order) => (
-            <OrderCard order={order.orderItems} orderDetails={order} />
-          ))}
+          {userOrder
+            .slice()
+            .reverse()
+            .map((order) => (
+              <OrderCard order={order.orderItems} orderDetails={order} />
+            ))}
           {/* <OrderCard /> */}
         </div>
       </div>
